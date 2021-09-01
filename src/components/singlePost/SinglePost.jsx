@@ -1,41 +1,45 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import "./singlePost.css";
+import axios from "axios";
 
 export default function SinglePost() {
+  const location = useLocation();
+  const path = location.pathname.split("/")[2];
+  const [post, setPost] = useState({});
+
+  useEffect(() => {
+    const getPost = async () => {
+      const res = await axios.get("/posts/" + path);
+      setPost(res.data);
+    };
+    getPost();
+  }, [[path]]);
+
   return (
     <div className="single__post">
       <div className="singlePost__wrapper">
-        <img
-          src="https://images.pexels.com/photos/6685428/pexels-photo-6685428.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
-          alt=""
-          className="singlePost__img"
-        />
+        {post.photo && (
+          <img src={post.photo} alt="" className="singlePost__img" />
+        )}
         <h1 className="singlePost__tittle">
-          Lorem ipsum dolor sit.
+          {post.tittle}
           <div className="singlePost__edit">
             <i className="singlePost__icon far fa-edit"></i>
             <i className="singlePost__icon far fa-trash-alt"></i>
           </div>
         </h1>
         <div className="singlePost__info">
-        <span className="singlePost__author">
-          Author: <b>Sadee Rohan</b>
-        </span>
-        <span className="singlePost__date">1 hour ago</span>
+          <span className="singlePost__author">
+            <Link to = {`/?user=${post.username}`} className="link" >
+              Author: <b>{post.username}</b>
+            </Link>
+          </span>
+          <span className="singlePost__date">
+            {new Date(post.createdAt).toDateString}
+          </span>
         </div>
-        <p className="singlePost__desc">
-        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Minima nam
-        tempore quia sit debitis fugit dignissimos hic cupiditate quo unde in
-        veritatis, quaerat pariatur voluptatem quos ad fuga exercitationem
-        voluptas sapiente amet illum et nisi inventore qui! Autem porro, fugiat
-        quibusdam facere rem sit natus aliquid ratione sapiente! Ut molestiae
-        eius laborum hic corporis aperiam quidem suscipit, obcaecati deserunt
-        voluptatem, est deleniti provident. Ratione sit ex saepe voluptates
-        sint, et doloremque ut, dolorem repellat magni exercitationem adipisci
-        inventore repudiandae beatae soluta. Totam, perferendis provident. Est
-        id aperiam magnam voluptates aut, laudantium provident aliquid deleniti
-        minus nisi rem. Ducimus, eligendi voluptatum!
-      </p>
+        <p className="singlePost__desc">{post.desc}</p>
       </div>
     </div>
   );

@@ -48,6 +48,11 @@
   text-align: center;
 }
 
+.login__button:disabled{
+  cursor: not-allowed;
+  background-color: rgb(248, 172, 144);
+}
+
 .loginRegister__button {
   position: absolute;
   top: 60px;
